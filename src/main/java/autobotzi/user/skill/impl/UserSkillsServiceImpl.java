@@ -25,7 +25,6 @@ public class UserSkillsServiceImpl implements UserSkillsService {
 
 
     @Transactional
-
     public List<UserSkillsDto> getAllUserSkills() {
         return userSkillsRepository.findAll().stream()
                 .map(userSkills -> UserSkillsDto.builder()
@@ -35,7 +34,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
                         .build())
                 .collect(Collectors.toList());
     }
-
+    @Transactional
     public UserSkills addSkillToUser(UserSkillsAssign userSkillsAssign) {
 
         return userSkillsRepository.save(UserSkills.builder()
@@ -47,7 +46,6 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-
     public UserSkills updateSkillsByUserEmail(String email, UserSkillsDto userSkillsUpdate) {
         return userSkillsRepository.save(UserSkills.builder()
                 .user(userRepository.findByEmail(email).orElseThrow(() ->
@@ -59,7 +57,6 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-
     @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public UserSkills addValidationToUserSkill(String email) {
         return userSkillsRepository.save(UserSkills.builder()

@@ -20,16 +20,17 @@ import java.util.UUID;
 public class UserImage implements Serializable {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    @Column(name = "name",unique = true)
     private String name;
 
     private String type;
     @Lob
     private byte[] data;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private Users user;
 

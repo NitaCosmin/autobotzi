@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
-    private final OrganizationsRepository organizationsRepository;
+
     public Users signUpUser(SignUpRequest user, String adminEmail) {
         return userRepository.save(Users.builder()
                 .email(user.getEmail())
