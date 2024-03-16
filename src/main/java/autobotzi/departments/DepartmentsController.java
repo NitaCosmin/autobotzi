@@ -5,6 +5,8 @@ import autobotzi.departments.dto.DepartmentsDto;
 import autobotzi.departments.dto.DepartmentsMembersDto;
 import autobotzi.departments.dto.DepartmentsResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +29,8 @@ public class DepartmentsController {
     }
 
     @PostMapping("/add")
-    public Departments addDepartment(@RequestBody DepartmentsDto departmentsDto, @RequestParam String adminEmail) {
-        return departmentsService.addDepartment(departmentsDto, adminEmail);
+    public Departments addDepartment(@RequestBody DepartmentsDto departmentsDto, @AuthenticationPrincipal UserDetails userDetails) {
+        return departmentsService.addDepartment(departmentsDto, userDetails.getUsername());
     }
 
     @PutMapping("/update-manager")

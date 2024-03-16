@@ -134,7 +134,7 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!--Cache for images and text-->
+        <!--Cache for userImages and text-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -167,9 +167,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <image>
+                    <userImage>
                         <builder>paketobuildpacks/builder-jammy-base:latest</builder>
-                    </image>
+                    </userImage>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
