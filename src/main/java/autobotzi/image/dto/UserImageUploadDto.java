@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder(builderClassName = "ImageUploadDtoBuilder")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserImageUploadDto extends UserImage {
@@ -16,10 +15,10 @@ public class UserImageUploadDto extends UserImage {
     private String type;
     @Lob
     private byte[] data;
-    public static ImageUploadDtoBuilder builder() {
-        return new ImageUploadDtoBuilder();
-    }
+//    public static ImageUploadDtoBuilder builder() {
+//        return new ImageUploadDtoBuilder();
+//    }
 
-    public static class ImageUploadDtoBuilder extends ImageBuilder {
-    }
+//    public static class ImageUploadDtoBuilder extends ImageBuilder {
+//    }
 }
