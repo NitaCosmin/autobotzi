@@ -54,8 +54,15 @@ public class DepartmentsServiceImpl implements DepartmentsService {
         return departmentsRepository.save(Departments.builder()
                 .name(departmentsDto.getName())
                 .description(departmentsDto.getDescription())
-                .user(userRepository.findByEmail(adminEmail)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
+                        .organization(userRepository.findByEmail(adminEmail)
+                                .map(user -> {
+                                    if (user.getRole().equals(Role.ADMIN)) {
+                                        return user.getOrganization();
+                                    } else {
+                                        throw new IllegalArgumentException("User is not an admin");
+                                    }
+                                })
+                                .orElseThrow(() -> new IllegalArgumentException("User not found")))
                 .build());
     }
     public Departments updateDepartmentManager(String email, String departmentName) {
