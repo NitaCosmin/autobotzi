@@ -16,6 +16,7 @@ import autobotzi.user.utils.Role;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -144,6 +145,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
 
     @Transactional
+
     public List<ProjectsDto> findAllProjectsByStatus(Status status) {
 
         return projectsRepository.findAllByProjectStatus(status).stream()
@@ -184,6 +186,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
 
     @Transactional
+
     public Projects deleteProject(String name) {
         return projectsRepository.findByName(name)
                 .filter(projects -> {

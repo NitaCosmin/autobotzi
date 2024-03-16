@@ -5,15 +5,12 @@ import autobotzi.skills.endorsements.SkillEndorsementsRepository;
 import autobotzi.skills.endorsements.SkillEndorsementsService;
 import autobotzi.skills.endorsements.dto.SkillEndorsementsDto;
 import autobotzi.user.UserRepository;
-import autobotzi.user.Users;
-import autobotzi.user.skill.UserSkills;
 import autobotzi.user.skill.UserSkillsRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +20,7 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
     private final SkillEndorsementsRepository skillEndorsementsRepository;
     private final UserRepository userRepository;
     private final UserSkillsRepository userSkillsRepository;
+
     @Transactional
     public SkillEndorsements addEndorsementToUserSkill(String email, SkillEndorsementsDto skillEndorsementsDto) {
         return skillEndorsementsRepository.save(SkillEndorsements.builder()
@@ -32,10 +30,11 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
                 .userSkill(userSkillsRepository
                         .findByUser(userRepository
                                 .findByEmail(email).orElseThrow())
-                        .orElseThrow(()->
+                        .orElseThrow(() ->
                                 new IllegalArgumentException("userskill not found")))
                 .build());
     }
+
     @Transactional
     public List<SkillEndorsementsDto> getAllEndorsementsOfUser(String email) {
         return skillEndorsementsRepository.findAll().stream()
@@ -47,30 +46,32 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
                         .build())
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public SkillEndorsements updateSkillEndorsementsByTitle(String email, String title, SkillEndorsementsDto skillEndorsementsDto) {
         return skillEndorsementsRepository.findByUserSkill(userSkillsRepository
-                .findByUser(userRepository
-                        .findByEmail(email).orElseThrow())
-                .orElseThrow(()->
-                        new IllegalArgumentException("userskill not found")))
+                        .findByUser(userRepository
+                                .findByEmail(email).orElseThrow())
+                        .orElseThrow(() ->
+                                new IllegalArgumentException("userskill not found")))
                 .map(skillEndorsements -> {
                     skillEndorsements.setTitle(skillEndorsementsDto.getTitle());
                     skillEndorsements.setDescription(skillEndorsementsDto.getDescription());
                     skillEndorsements.setProject(skillEndorsementsDto.getProjectLink());
                     return skillEndorsementsRepository.save(skillEndorsements);
-                }).orElseThrow(()->new IllegalArgumentException("userskill not found"));
+                }).orElseThrow(() -> new IllegalArgumentException("userskill not found"));
     }
+
     @Transactional
     public void deleteSkillEndorsementsByTitle(String email, String title) {
-       skillEndorsementsRepository.delete(SkillEndorsements.builder()
-               .title(title)
-               .userSkill(userSkillsRepository
-                       .findByUser(userRepository
-                               .findByEmail(email).orElseThrow())
-                       .orElseThrow(()->
-                               new IllegalArgumentException("userskill not found")))
-               .build());
+        skillEndorsementsRepository.delete(SkillEndorsements.builder()
+                .title(title)
+                .userSkill(userSkillsRepository
+                        .findByUser(userRepository
+                                .findByEmail(email).orElseThrow())
+                        .orElseThrow(() ->
+                                new IllegalArgumentException("userskill not found")))
+                .build());
     }
 
 }
