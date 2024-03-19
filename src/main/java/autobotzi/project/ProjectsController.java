@@ -35,7 +35,11 @@ public class ProjectsController {
         String email = userDetails.getUsername();
         return projectsService.createProject(email, projectsDto);
     }
-
+    @GetMapping("/organization")
+    public List<ProjectsDto> getAllProjectsFromOrganization(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        return projectsService.getAllProjectsFromOrganization(email);
+    }
     @PutMapping
     public Projects updateProjectStatus(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String name
             , @RequestBody ProjectUpdate projectUpdate) {

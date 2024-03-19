@@ -23,6 +23,10 @@ public class DepartmentsController {
     public List<DepartmentsResponse> getAllDepartments() {
         return departmentsService.getAllDepartments();
     }
+    @GetMapping("/all-organizations")
+    public List<DepartmentsResponse> getAllDepartmentsOrganizetions(@AuthenticationPrincipal UserDetails userDetails) {
+        return departmentsService.getAllDepartmentsOrganizations(userDetails.getUsername());
+    }
     @GetMapping("/all-admin-view")
     public List<DepartmentAdminView> getDepartments() {
         return departmentsService.getDepartments();

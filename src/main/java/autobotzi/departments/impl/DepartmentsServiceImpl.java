@@ -89,6 +89,25 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                         .orElseThrow(() -> new IllegalArgumentException("Department not found")));
 
     }
+    public List<DepartmentsResponse> getAllDepartmentsOrganizations(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return departmentsRepository.findAll().stream()
+                .filter(department -> department.getOrganization() != null &&
+                        department.getOrganization().equals(user.getOrganization()))
+                .map(department -> {
+                    DepartmentsResponse departmentDto = new DepartmentsResponse();
+                    departmentDto.setName(department.getName());
+                    departmentDto.setDescription(department.getDescription());
+                    Users departmentUser = department.getUser();
+                    if (departmentUser != null) {
+                        departmentDto.setDepartmentManager(departmentUser.getName());
+                    }
+                    return departmentDto;
+                })
+                .collect(Collectors.toList());
+    }
     public void deleteDepartment(Long id) {
         departmentsRepository.deleteById(id);
     }

@@ -17,5 +17,6 @@ public interface DepartmentsService {
     List<DepartmentAdminView> getDepartments();
     Departments updateDepartmentManager(String email,String departmentName);
     Departments updateDepartmentByDepartmentName(String name,DepartmentsDto departmentsDto);
+    List<DepartmentsResponse> getAllDepartmentsOrganizations(String email);
 
 }

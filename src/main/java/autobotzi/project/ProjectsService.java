@@ -23,5 +23,6 @@ public interface ProjectsService {
     List<Status> getAllStatus();
     List<Period> getAllPeriods();
     Projects deleteProject(String name);
+    List<ProjectsDto> getAllProjectsFromOrganization(String email);
 
 }

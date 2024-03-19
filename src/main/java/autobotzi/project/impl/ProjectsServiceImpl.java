@@ -184,9 +184,23 @@ public class ProjectsServiceImpl implements ProjectsService {
         return List.of(Period.values());
     }
 
-
+    public List<ProjectsDto> getAllProjectsFromOrganization(String email) {
+        return projectsRepository.findAll().stream()
+                .filter(projects -> projects.getOrganization().equals(userRepository.findByEmail(email)
+                        .map(Users::getOrganization)
+                        .orElseThrow(() -> new RuntimeException("User not found"))))
+                .map(project -> ProjectsDto.builder()
+                        .name(project.getName())
+                        .description(project.getDescription())
+                        .period(project.getPeriod())
+                        .projectStatus(project.getProjectStatus())
+                        .startDate(project.getStartDate())
+                        .deadLine(project.getDeadline())
+                        .technology(project.getTechnology())
+                        .build())
+                .toList();
+    }
     @Transactional
-
     public Projects deleteProject(String name) {
         return projectsRepository.findByName(name)
                 .filter(projects -> {
