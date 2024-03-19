@@ -16,6 +16,10 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/image")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000"
+        ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
+        ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
+        ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
 public class ImageController {
 
     private final ImageService imageService;
