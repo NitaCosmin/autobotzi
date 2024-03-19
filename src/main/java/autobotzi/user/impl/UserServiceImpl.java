@@ -3,6 +3,10 @@ package autobotzi.user.impl;
 import autobotzi.departments.Departments;
 import autobotzi.departments.DepartmentsMembersRepository;
 import autobotzi.departments.DepartmentsRepository;
+import autobotzi.project.Projects;
+import autobotzi.project.ProjectsRepository;
+import autobotzi.project.assignments.ProjectAssignmentsRepository;
+import autobotzi.skills.SkillsRepository;
 import autobotzi.user.UserRepository;
 import autobotzi.user.UserService;
 import autobotzi.user.Users;
@@ -10,6 +14,8 @@ import autobotzi.user.dto.UsersAdminViewDto;
 import autobotzi.user.dto.UsersDto;
 import autobotzi.user.dto.UsersOrganizationsDto;
 import autobotzi.user.dto.UsersPreViewDto;
+import autobotzi.user.notifications.NotificationsRepository;
+import autobotzi.user.skill.UserSkillsRepository;
 import autobotzi.user.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +34,11 @@ public class UserServiceImpl implements UserService {
 
     private final DepartmentsRepository departmentsRepository;
     private final DepartmentsMembersRepository departmentsMembersRepository;
+    private final NotificationsRepository notificationsRepository;
+    private final UserSkillsRepository userSkillsRepository;
+    private final ProjectsRepository projectsRepository;
+    private final ProjectAssignmentsRepository projectAssignmentsRepository;
+    private final SkillsRepository skillsRepository;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -50,6 +61,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(java.util.stream.Collectors.toList());
     }
+
     public List<UsersPreViewDto> getAllPreView() {
         return userRepository.findAll().stream()
                 .map(user -> UsersPreViewDto.builder()
@@ -58,6 +70,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(java.util.stream.Collectors.toList());
     }
+
     public List<UsersAdminViewDto> getAllAdminView() {
         return userRepository.findAll().stream()
                 .map(user -> UsersAdminViewDto.builder()
@@ -68,6 +81,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(java.util.stream.Collectors.toList());
     }
+
     public List<UsersOrganizationsDto> getAllUsersWithOrganizations() {
         return userRepository.findAll().stream()
                 .map(user -> new UsersOrganizationsDto(
@@ -75,6 +89,7 @@ public class UserServiceImpl implements UserService {
                         user.getOrganization().getName()))
                 .collect(Collectors.toList());
     }
+
     public List<UsersDto> getUsersByRole(Role role) {
         return userRepository.findByRole(role).stream()
                 .map(user -> UsersDto.builder()
@@ -84,6 +99,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(Collectors.toList());
     }
+
     public List<Role> getAllRoles() {
         return List.of(Role.values());
 
@@ -96,13 +112,14 @@ public class UserServiceImpl implements UserService {
                         .email(user.getEmail())
                         .role(user.getRole())
                         .build())
-                .orElseThrow(()-> new IllegalArgumentException("User skills not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User skills not found"));
     }
+
     public List<UsersDto> getUsersByDepartment(String departmentName) {
         return departmentsMembersRepository.findByDepartment(
-                departmentsRepository.findByName(departmentName)
-                        .orElseThrow(()->
-                                new IllegalArgumentException("Department not found")))
+                        departmentsRepository.findByName(departmentName)
+                                .orElseThrow(() ->
+                                        new IllegalArgumentException("Department not found")))
                 .stream()
                 .map(departmentsMembers -> UsersDto.builder()
                         .name(departmentsMembers.getUser().getName())
@@ -111,6 +128,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(Collectors.toList());
     }
+
     public UsersDto updateUserRole(String email, Role role) {
         return userRepository.findByEmail(email)
                 .map(user -> {
@@ -124,6 +142,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .orElse(null);
     }
+
     public UsersDto updateUserByEmail(String email, String name) {
         return userRepository.findByEmail(email)
                 .map(user -> {
@@ -137,6 +156,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .orElse(null);
     }
+
     public Users deleteUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(user -> {
@@ -145,14 +165,25 @@ public class UserServiceImpl implements UserService {
                 })
                 .orElse(null);
     }
-    public Users deleteUserById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    userRepository.delete(user);
-                    return user;
-                })
-                .orElse(null);
+
+    public void deallocatePM(Users users) {
+        Projects project = projectsRepository.findByUser(users).orElse(null);
+        if (project == null) {
+            return;
+        }
+        project.setUser(null);
+        projectsRepository.save(project);
     }
+
+    public void deallocateDM(Users users) {
+        Departments departments = departmentsRepository.findByUser(users).orElse(null);
+        if (departments == null) {
+            return;
+        }
+        departments.setUser(null);
+        departmentsRepository.save(departments);
+    }
+
 }
 
 

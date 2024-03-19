@@ -27,7 +27,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
 
 
     @Transactional
-    @Cacheable(value = "userskills")
+    @Cacheable(value = "userSkills")
     public List<UserSkillsDto> getAllUserSkills() {
         return userSkillsRepository.findAll().stream()
                 .map(userSkills -> UserSkillsDto.builder()
@@ -39,7 +39,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-    @CacheEvict(value = "userskills")
+    @CacheEvict(value = "userSkills")
     @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public UserSkills addSkillToUser(UserSkillsAssign userSkillsAssign) {
 
@@ -51,7 +51,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
                 .build());
     }
     @Transactional
-    @Cacheable(value = "userskills")
+    @Cacheable(value = "userSkills", key = "#email")
     public List<UserSkillsDto> getSkillsByUserEmail(String email) {
         return userSkillsRepository.findAll().stream()
                 .filter(userSkills -> userSkills.getUser().getEmail().equals(email))
@@ -64,7 +64,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-    @CacheEvict(value = "userskills")
+    @CacheEvict(value = "userSkills", allEntries = true)
     public UserSkills updateSkillsByUserEmail(String email, UserSkillsDto userSkillsUpdate) {
 
         return userSkillsRepository.save(UserSkills.builder()
@@ -77,7 +77,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-    @CacheEvict(value = "userskills")
+    @CacheEvict(value = "userSkills", allEntries = true)
     @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public UserSkills addValidationToUserSkill(String email) {
         return userSkillsRepository.save(UserSkills.builder()

@@ -40,6 +40,9 @@ public class DepartmentsController {
     public Departments addDepartment(@RequestBody DepartmentsDto departmentsDto, @AuthenticationPrincipal UserDetails userDetails) {
         return departmentsService.addDepartment(departmentsDto, userDetails.getUsername());
     }
+    //===============================================================================================================
+    //Departments Members
+    //===============================================================================================================
 
     @PutMapping("/update-manager")
     public Departments updateDepartmentManager(@RequestParam String email, @RequestParam String departmentName) {

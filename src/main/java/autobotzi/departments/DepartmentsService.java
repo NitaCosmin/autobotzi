@@ -12,7 +12,7 @@ public interface DepartmentsService {
 
     Departments addDepartment(DepartmentsDto departmentsDto, String adminEmail);
 
-    void deleteDepartment(Long id);
+
     List<DepartmentsResponse> getAllDepartments();
     List<DepartmentAdminView> getDepartments();
     Departments updateDepartmentManager(String email,String departmentName);

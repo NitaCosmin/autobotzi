@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping("/skills")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000"
-        ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
-        ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
-        ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
+        , "http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
+        , "https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
+        , "https://front-autobotzi-c55123365842.herokuapp.com/"})
 public class SkillsController {
 
     private final SkillsService skillsService;
@@ -28,22 +28,27 @@ public class SkillsController {
     public List<SkillsDto> getAllSkills() {
         return skillsService.getSkills();
     }
+
     @GetMapping("/get")
     public SkillsDto getSkill(@RequestParam String name) {
         return skillsService.getSkill(name);
     }
+
     @PostMapping("/add")
-    public Skills addSkill( @AuthenticationPrincipal UserDetails userDetails, SkillsDto skillsDto) {
+    public Skills addSkill(@AuthenticationPrincipal UserDetails userDetails, SkillsDto skillsDto) {
         return skillsService.addSkill(skillsDto, userDetails.getUsername());
     }
+
     @PutMapping("/update")
-    public Skills updateSkill(SkillsDto skillsDto, @AuthenticationPrincipal UserDetails userDetails) {
-        return skillsService.updateSkill(skillsDto, userDetails.getUsername());
+    public Skills updateSkill(@RequestParam String name, SkillsDto skillsDto, @AuthenticationPrincipal UserDetails userDetails) {
+        return skillsService.updateSkill(skillsDto, userDetails.getUsername(), name);
     }
+
     @DeleteMapping("/delete")
     public void deleteSkill(@RequestBody SkillsDtoDelete skillsDtoDelete) {
         skillsService.deleteSkill(skillsDtoDelete);
     }
+
     //================================================
     // Endorsements
     //================================================
@@ -64,6 +69,7 @@ public class SkillsController {
         String email = userDetails.getUsername();
         return skillEndorsementsService.updateSkillEndorsementsByTitle(email, title, skillEndorsementsDto);
     }
+
     @DeleteMapping("/endorsements-delete/")
     public void deleteSkillEndorsementsByTitle(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String title) {
         String email = userDetails.getUsername();

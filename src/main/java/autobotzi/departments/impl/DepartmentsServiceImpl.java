@@ -111,9 +111,7 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                 })
                 .collect(Collectors.toList());
     }
-    public void deleteDepartment(Long id) {
-        departmentsRepository.deleteById(id);
-    }
+
 
 
 }

@@ -2,6 +2,7 @@ package autobotzi.project;
 
 import autobotzi.project.utils.Period;
 import autobotzi.project.utils.Status;
+import autobotzi.user.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,6 @@ public interface ProjectsRepository extends JpaRepository<Projects, Long> {
     List<Projects> findAllByProjectStatus(Status status);
 
     List<Projects> findAllByPeriod(Period period);
+
+    Optional<Projects> findByUser(Users user);
 }
