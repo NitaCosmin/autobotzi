@@ -20,13 +20,18 @@ public class ProjectAssignments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private StatusAssignments statusAssignments;
+
     @ManyToOne
     @JoinColumn(name = "project_id")
+
     private Projects project;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Roles role;

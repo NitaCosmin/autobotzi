@@ -15,7 +15,13 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("images")));
+        cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("images")
+                ,new ConcurrentMapCache("userskils")
+                ,new ConcurrentMapCache("departments")
+                ,new ConcurrentMapCache("users")
+                ,new ConcurrentMapCache("organizations")
+                ,new ConcurrentMapCache("roles")
+                ,new ConcurrentMapCache("projects")));
         return cacheManager;
     }
 }

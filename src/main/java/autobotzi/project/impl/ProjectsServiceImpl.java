@@ -8,19 +8,20 @@ import autobotzi.project.dto.ProjectsDateDto;
 import autobotzi.project.dto.ProjectsDto;
 import autobotzi.project.utils.Period;
 import autobotzi.project.utils.Status;
-import autobotzi.role.Roles;
 import autobotzi.role.RolesRepository;
 import autobotzi.user.UserRepository;
 import autobotzi.user.Users;
 import autobotzi.user.utils.Role;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
+    @CacheEvict(value = "projects",allEntries = true)
     public Projects createProject(String email, ProjectsDto projectsDto) {
         return projectsRepository.findByName(projectsDto.getName())
                 .filter(p -> {
@@ -56,6 +58,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('PROJECT_MANAGER')")
+    @CacheEvict(value = "projects", key = "#name")
     public Projects updateProjectStatusByProjectName(String email, String name, ProjectUpdate projectUpdateDto) {
         return projectsRepository.save(
                 userRepository.findByEmail(email)
@@ -75,6 +78,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
+    @CacheEvict(value = "projects",allEntries = true)
     public Projects addProjectManagerToProjectByEmail(String admin, String email, String name) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
@@ -98,6 +102,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
+    @CacheEvict(value = "projects", key = "#name")
     public Projects updateProjectDateByProjectName(String email, String name, ProjectsDateDto projectsDto) {
         return projectsRepository.save(
                 userRepository.findByEmail(email)
@@ -114,6 +119,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
 
     @Transactional
+    @Cacheable(value = "projects", key = "#name")
     public ProjectsDto findProjectByName(String name) {
         return projectsRepository.findByName(name)
                 .map(project -> ProjectsDto.builder()
@@ -129,6 +135,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
 
     @Transactional
+    @Cacheable(value = "projects")
     public List<ProjectsDto> findAllProjects() {
 
         return projectsRepository.findAll().stream()
@@ -145,7 +152,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
 
     @Transactional
-
+    @Cacheable(value = "projects", key = "#status")
     public List<ProjectsDto> findAllProjectsByStatus(Status status) {
 
         return projectsRepository.findAllByProjectStatus(status).stream()
@@ -162,6 +169,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     }
 
     @Transactional
+    @Cacheable(value = "projects", key = "#period")
     public List<ProjectsDto> findAllProjectsByPeriod(Period period) {
 
         return projectsRepository.findAllByPeriod(period).stream()
@@ -184,6 +192,7 @@ public class ProjectsServiceImpl implements ProjectsService {
         return List.of(Period.values());
     }
     @Transactional
+    @Cacheable(value = "projects", key = "#email")
     public List<ProjectsDto> getAllProjectsFromOrganization(String email) {
         return projectsRepository.findAll().stream()
                 .filter(projects -> projects.getOrganization().equals(userRepository.findByEmail(email)
@@ -201,6 +210,7 @@ public class ProjectsServiceImpl implements ProjectsService {
                 .toList();
     }
     @Transactional
+    @CacheEvict(value = "projects",allEntries = true)
     public Projects deleteProject(String name) {
         return projectsRepository.findByName(name)
                 .filter(projects -> {

@@ -5,6 +5,7 @@ import autobotzi.departments.DepartmentsMembersRepository;
 import autobotzi.departments.DepartmentsRepository;
 import autobotzi.user.UserRepository;
 import autobotzi.user.UserService;
+import autobotzi.user.Users;
 import autobotzi.user.dto.UsersAdminViewDto;
 import autobotzi.user.dto.UsersDto;
 import autobotzi.user.dto.UsersOrganizationsDto;
@@ -74,14 +75,18 @@ public class UserServiceImpl implements UserService {
                         user.getOrganization().getName()))
                 .collect(Collectors.toList());
     }
-    public List<UsersDto> getUsersByRole(String role) {
-        return userRepository.findByRole(Role.valueOf(role)).stream()
+    public List<UsersDto> getUsersByRole(Role role) {
+        return userRepository.findByRole(role).stream()
                 .map(user -> UsersDto.builder()
                         .name(user.getName())
                         .email(user.getEmail())
                         .role(user.getRole())
                         .build())
                 .collect(Collectors.toList());
+    }
+    public List<Role> getAllRoles() {
+        return List.of(Role.values());
+
     }
 
     public UsersDto getUserByEmail(String email) {
@@ -106,10 +111,10 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public UsersDto updateUserRole(String email, String role) {
+    public UsersDto updateUserRole(String email, Role role) {
         return userRepository.findByEmail(email)
                 .map(user -> {
-                    user.setRole(Role.valueOf(role));
+                    user.setRole(role);
                     return userRepository.save(user);
                 })
                 .map(user -> UsersDto.builder()
@@ -130,6 +135,22 @@ public class UserServiceImpl implements UserService {
                         .email(user.getEmail())
                         .role(user.getRole())
                         .build())
+                .orElse(null);
+    }
+    public Users deleteUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return user;
+                })
+                .orElse(null);
+    }
+    public Users deleteUserById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return user;
+                })
                 .orElse(null);
     }
 }

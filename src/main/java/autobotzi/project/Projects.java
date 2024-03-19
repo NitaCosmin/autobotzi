@@ -25,7 +25,9 @@ public class Projects {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name="name", unique = true)
     private String name;
+
     @Lob
     @Column(columnDefinition = "text")
     private String description;

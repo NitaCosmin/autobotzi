@@ -18,11 +18,15 @@ public class Departments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String name;
+
     private String description;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private Users user;
+
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organizations organization;

@@ -17,7 +17,10 @@ public class Organizations  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name="name", unique = true)
     private String name;
+
     private String address;
 
 

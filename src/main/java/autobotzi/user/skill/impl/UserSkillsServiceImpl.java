@@ -7,6 +7,8 @@ import autobotzi.user.skill.UserSkillsRepository;
 import autobotzi.user.skill.UserSkillsService;
 import autobotzi.user.skill.dto.UserSkillsAssign;
 import autobotzi.user.skill.dto.UserSkillsDto;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
 
 
     @Transactional
+    @Cacheable(value = "userskills")
     public List<UserSkillsDto> getAllUserSkills() {
         return userSkillsRepository.findAll().stream()
                 .map(userSkills -> UserSkillsDto.builder()
@@ -34,7 +37,10 @@ public class UserSkillsServiceImpl implements UserSkillsService {
                         .build())
                 .collect(Collectors.toList());
     }
+
     @Transactional
+    @CacheEvict(value = "userskills")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public UserSkills addSkillToUser(UserSkillsAssign userSkillsAssign) {
 
         return userSkillsRepository.save(UserSkills.builder()
@@ -44,9 +50,23 @@ public class UserSkillsServiceImpl implements UserSkillsService {
                         new RuntimeException("Skill not found")))
                 .build());
     }
+    @Transactional
+    @Cacheable(value = "userskills")
+    public List<UserSkillsDto> getSkillsByUserEmail(String email) {
+        return userSkillsRepository.findAll().stream()
+                .filter(userSkills -> userSkills.getUser().getEmail().equals(email))
+                .map(userSkills -> UserSkillsDto.builder()
+                        .level(userSkills.getLevel())
+                        .experience(userSkills.getExperience())
+                        .endorsements(userSkills.getEndorsements())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     @Transactional
+    @CacheEvict(value = "userskills")
     public UserSkills updateSkillsByUserEmail(String email, UserSkillsDto userSkillsUpdate) {
+
         return userSkillsRepository.save(UserSkills.builder()
                 .user(userRepository.findByEmail(email).orElseThrow(() ->
                         new RuntimeException("User not found")))
@@ -57,6 +77,7 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
+    @CacheEvict(value = "userskills")
     @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public UserSkills addValidationToUserSkill(String email) {
         return userSkillsRepository.save(UserSkills.builder()
@@ -69,7 +90,6 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-
     @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public List<UserSkillsDto> getAllValidatedSkills() {
         return userSkillsRepository.findByValidatedTrue().stream()
@@ -82,7 +102,6 @@ public class UserSkillsServiceImpl implements UserSkillsService {
     }
 
     @Transactional
-
     @PreAuthorize("hasRole('ADMIN') or hasRole('DEPARTMENT_MANAGER')")
     public List<UserSkillsDto> getAllNonValidatedSkills() {
         return userSkillsRepository.findByValidatedFalse().stream()

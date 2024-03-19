@@ -12,11 +12,13 @@ import autobotzi.user.skill.UserSkills;
 import autobotzi.user.skill.UserSkillsService;
 import autobotzi.user.skill.dto.UserSkillsAssign;
 import autobotzi.user.skill.dto.UserSkillsDto;
+import autobotzi.user.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.Cacheable;
 
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserSkillsService userSkillsService;
+    private final UserRolesService userRolesService;
 
 
     @GetMapping
@@ -40,6 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
+
     public List<UsersDto> getAll() {
         return userService.getAll();
     }
@@ -60,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/role")
-    public List<UsersDto> getByRole(@RequestParam String role) {
+    public List<UsersDto> getByRole(@RequestParam Role role) {
         return userService.getUsersByRole(role);
     }
 
@@ -73,9 +77,13 @@ public class UserController {
     public List<UsersDto> getByDepartment(@RequestParam String departmentName) {
         return userService.getUsersByDepartment(departmentName);
     }
+    @GetMapping("/roles")
+    public List<Role> getAllRoles() {
+        return userService.getAllRoles();
+    }
 
     @PutMapping("/update-role")
-    public UsersDto updateUserRole(@RequestParam String email, @RequestParam String role) {
+    public UsersDto updateUserRole(@RequestParam String email, @RequestParam Role role) {
         return userService.updateUserRole(email, role);
     }
 
@@ -83,6 +91,11 @@ public class UserController {
     public UsersDto updateUserByEmail(@RequestParam String email, @RequestParam String name) {
         return userService.updateUserByEmail(email, name);
     }
+    @DeleteMapping("/delete-by-email")
+    public Users deleteUserByEmail(@RequestParam String email) {
+        return userService.deleteUserByEmail(email);
+    }
+
     //===========================================================
     //User Skills
     //===========================================================
@@ -91,7 +104,10 @@ public class UserController {
     public List<UserSkillsDto> getAllUserSkills() {
         return userSkillsService.getAllUserSkills();
     }
-
+    @GetMapping("/skills/user")
+    public List<UserSkillsDto> getSkillsByUserEmail(@AuthenticationPrincipal UserDetails userDetails) {
+        return userSkillsService.getSkillsByUserEmail(userDetails.getUsername());
+    }
     @PutMapping("/skills")
     public UserSkills addSkillToUser(@RequestBody UserSkillsAssign userSkillsAssign) {
         return userSkillsService.addSkillToUser(userSkillsAssign);
@@ -99,14 +115,15 @@ public class UserController {
 
     @PutMapping("/skills/update")
     public UserSkills updateSkillsByUserEmail(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UserSkillsDto userSkills) {
-        String email = userDetails.getUsername();
-        return userSkillsService.updateSkillsByUserEmail(email, userSkills);
+
+        return userSkillsService.updateSkillsByUserEmail(userDetails.getUsername(), userSkills);
     }
 
     @PostMapping("/skills/validate")
     public UserSkills addValidationToUserSkill(@RequestParam String email) {
         return userSkillsService.addValidationToUserSkill(email);
     }
+
 
     @GetMapping("/skills/validated")
     public List<UserSkillsDto> getAllValidatedSkills() {
@@ -118,10 +135,12 @@ public class UserController {
         return userSkillsService.getAllNonValidatedSkills();
     }
 
+
     //===========================================================
     //User Roles
     //===========================================================
-    private final UserRolesService userRolesService;
+
+
 
     @PostMapping("/roles/assign")
     public UserRoles assignRoleToUser(@RequestBody UsersRolesDto usersRolesDto) {

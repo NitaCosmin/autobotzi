@@ -27,6 +27,7 @@ import java.util.List;
         ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
         ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
         ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
+
 public class ProjectsController {
 
     private final ProjectsService projectsService;
@@ -95,7 +96,7 @@ public class ProjectsController {
     }
 
     @DeleteMapping
-    public Projects deleteProject(@PathVariable String name) {
+    public Projects deleteProject(@RequestParam String name) {
         return projectsService.deleteProject(name);
     }
 

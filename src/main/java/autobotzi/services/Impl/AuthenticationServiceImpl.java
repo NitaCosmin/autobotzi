@@ -36,6 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
 
     public Users signUpUser(SignUpRequest user, String adminEmail) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("A user with this email already exists");
+        }
         return userRepository.save(Users.builder()
                 .email(user.getEmail())
                 .name(user.getName())

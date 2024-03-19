@@ -15,4 +15,5 @@ public interface UserSkillsService {
     UserSkills addValidationToUserSkill(String email);
     List<UserSkillsDto> getAllValidatedSkills();
     List<UserSkillsDto> getAllNonValidatedSkills();
+    List<UserSkillsDto> getSkillsByUserEmail(String email);
 }

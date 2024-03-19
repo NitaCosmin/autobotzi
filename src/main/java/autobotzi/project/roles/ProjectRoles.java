@@ -17,6 +17,7 @@ public class ProjectRoles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name="name", unique = true)
     private String name;
 
     private Integer quantity;
