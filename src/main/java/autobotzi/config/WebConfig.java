@@ -14,6 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/")
                 .allowedOrigins("https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/")
+                .allowedOrigins("https://front-autobotzi-c55123365842.herokuapp.com/")
                 .allowedOrigins("http://localhost:3000")  // Add your frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
 
