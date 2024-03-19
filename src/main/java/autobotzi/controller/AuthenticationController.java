@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000"
+        ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
+        ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
+        ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
 @RequiredArgsConstructor
 public class AuthenticationController {
 
