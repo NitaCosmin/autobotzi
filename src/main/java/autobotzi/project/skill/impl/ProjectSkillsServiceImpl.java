@@ -7,6 +7,7 @@ import autobotzi.project.skill.ProjectSkillsService;
 import autobotzi.project.skill.dto.ProjectSkillsDto;
 import autobotzi.project.skill.dto.ProjectSkillsResponseSkills;
 import autobotzi.skills.SkillsRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class ProjectSkillsServiceImpl implements ProjectSkillsService {
     private final ProjectSkillsRepository projectSkillsRepository;
     private final SkillsRepository skillsRepository;
     private final ProjectsRepository projectsRepository;
-
+    @Transactional
     public ProjectSkills addSkillToProject(ProjectSkillsDto projectSkillsDto) {
         return projectSkillsRepository.save(skillsRepository
                 .findByName(projectSkillsDto.getSkillName())
@@ -32,7 +33,7 @@ public class ProjectSkillsServiceImpl implements ProjectSkillsService {
                 .orElseThrow(() -> new IllegalArgumentException("Skill not found")
                 ));
     }
-
+    @Transactional
     public ProjectSkills updateSkillInProject(ProjectSkillsDto projectSkillsDto) {
         return projectSkillsRepository.save(skillsRepository
                 .findByName(projectSkillsDto.getSkillName())
@@ -47,7 +48,7 @@ public class ProjectSkillsServiceImpl implements ProjectSkillsService {
                 .orElseThrow(() -> new IllegalArgumentException("Skill not found")
                 ));
     }
-
+    @Transactional
     public void getSkillsByProject(ProjectSkillsDto projectSkillsDto) {
         projectSkillsRepository.findByProject(projectsRepository.findByName(projectSkillsDto.getProjectName())
                         .orElseThrow(() -> new IllegalArgumentException("Project not found")))
@@ -58,7 +59,7 @@ public class ProjectSkillsServiceImpl implements ProjectSkillsService {
                         .build())
                 .collect(Collectors.toList());
     }
-
+@Transactional
     public void deleteSkillFromProject(String skills) {
         projectSkillsRepository.delete(skillsRepository.findByName(skills)
                 .map(skill -> projectSkillsRepository.findBySkill(skill)
