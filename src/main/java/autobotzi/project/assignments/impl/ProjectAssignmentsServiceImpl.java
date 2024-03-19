@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 
-//TODO: rework security endpoints
+
 
 public class ProjectAssignmentsServiceImpl implements ProjectAssignmentsService {
 

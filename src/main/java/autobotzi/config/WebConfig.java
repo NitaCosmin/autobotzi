@@ -13,15 +13,18 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")  // Add your frontend URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-        registry.addMapping("/**")
                 .allowedOrigins("http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-        registry.addMapping("/**")
                 .allowedOrigins("https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-        registry.addMapping("/**")
                 .allowedOrigins("https://front-autobotzi-c55123365842.herokuapp.com/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+//        registry.addMapping("/**")
+//                .allowedOrigins("https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+//        registry.addMapping("/**")
+//                .allowedOrigins("https://front-autobotzi-c55123365842.herokuapp.com/")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 }

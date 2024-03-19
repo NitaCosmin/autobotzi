@@ -183,7 +183,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     public List<Period> getAllPeriods() {
         return List.of(Period.values());
     }
-
+    @Transactional
     public List<ProjectsDto> getAllProjectsFromOrganization(String email) {
         return projectsRepository.findAll().stream()
                 .filter(projects -> projects.getOrganization().equals(userRepository.findByEmail(email)
