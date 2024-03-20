@@ -16,7 +16,7 @@ public interface ProjectsService {
             , ProjectUpdate projectUpdateDto);
     Projects addProjectManagerToProjectByEmail(String admin,String email, String name);
     Projects updateProjectDateByProjectName(String email, String name, ProjectsDateDto projectsDto);
-    List<ProjectDepartmentDto> getAllProjectsByDepartmentName(String departmentName);
+//    List<ProjectDepartmentDto> getAllProjectsByDepartmentName(String departmentName);
     ProjectsDto findProjectByName(String name);
     List<ProjectsDto> findAllProjects();
     List<ProjectsDto> findAllProjectsByStatus(Status status);

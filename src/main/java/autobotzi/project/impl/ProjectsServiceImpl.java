@@ -40,6 +40,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     @PreAuthorize("hasRole('ADMIN')")
     @CacheEvict(value = "projects", allEntries = true)
     public Projects createProject(String email, ProjectsDto projectsDto) {
+
         return projectsRepository.findByName(projectsDto.getName())
                 .filter(p -> {
                     throw new RuntimeException("A project with the name " + projectsDto.getName() + " already exists");
@@ -55,11 +56,6 @@ public class ProjectsServiceImpl implements ProjectsService {
                         .organization(userRepository.findByEmail(email)
                                 .map(Users::getOrganization)
                                 .orElseThrow(() -> new RuntimeException("User not found")))
-                        .department(departmentsRepository.findByUser(
-                                        userRepository.findByEmail(email)
-                                                .filter(user -> user.getRole().equals(Role.DEPARTMENT_MANAGER))
-                                                .orElse(null))
-                                .orElseThrow(() -> new RuntimeException("Department not found")))
                         .build()));
     }
 
@@ -220,17 +216,18 @@ public class ProjectsServiceImpl implements ProjectsService {
                 .toList();
     }
 
-    @Transactional
-    @Cacheable(value = "projects", key = "#departmentName")
-    public List<ProjectDepartmentDto> getAllProjectsByDepartmentName( String departmentName) {
-        return projectsRepository.findAll().stream()
-                .filter(projects -> projects.getDepartment().getName().equals(departmentName))
-                .map(project -> ProjectDepartmentDto.builder()
-                        .name(project.getName())
-                        .department(project.getDepartment().getName())
-                        .build())
-                .toList();
-    }
+
+//    @Transactional
+//    @Cacheable(value = "projects", key = "#departmentName")
+//    public List<ProjectDepartmentDto> getAllProjectsByDepartmentName( String departmentName) {
+//        return projectsRepository.findAll().stream()
+//                .filter(projects -> projects.getDepartment().getName().equals(departmentName))
+//                .map(project -> ProjectDepartmentDto.builder()
+//                        .name(project.getName())
+//                        .department(project.getDepartment().getName())
+//                        .build())
+//                .toList();
+//    }
 
     @Transactional
     @CacheEvict(value = "projects", allEntries = true)

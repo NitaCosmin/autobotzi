@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface NotificationsRepository extends JpaRepository<Notifications, Long> {
     Optional<Notifications> findByUser(Users user);
+
+    void deleteByUser(Users user);
 }

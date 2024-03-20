@@ -17,6 +17,7 @@ import autobotzi.user.dto.UsersPreViewDto;
 import autobotzi.user.notifications.NotificationsRepository;
 import autobotzi.user.skill.UserSkillsRepository;
 import autobotzi.user.utils.Role;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -182,6 +183,21 @@ public class UserServiceImpl implements UserService {
         }
         departments.setUser(null);
         departmentsRepository.save(departments);
+    }
+    @Transactional
+    public void deleteUserFromEverywhere(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        deallocatePM(user);
+        notificationsRepository.deleteByUser(user);
+        userSkillsRepository.deleteByUser(user);
+        deallocateDM(user);
+        departmentsMembersRepository.deleteByUser(user);
+        projectAssignmentsRepository.deleteByUser(user);
+        skillsRepository.deleteByUser(user);
+
+        userRepository.delete(user);
     }
 
 }

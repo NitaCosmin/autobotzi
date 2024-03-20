@@ -11,4 +11,6 @@ import java.util.Optional;
 
 public interface ProjectAssignmentsRepository extends JpaRepository<ProjectAssignments, Long> {
     Optional<ProjectAssignments> findByUser(Users user);
+
+    void deleteByUser(Users user);
 }

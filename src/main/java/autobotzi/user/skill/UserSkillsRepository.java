@@ -19,4 +19,6 @@ public interface UserSkillsRepository extends JpaRepository<UserSkills, Long> {
     List<UserSkills> findByValidatedTrue();
 
     Collection<UserSkills> findByValidatedFalse();
+
+    void deleteByUser(Users user);
 }

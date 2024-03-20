@@ -12,4 +12,6 @@ public interface SkillsRepository extends JpaRepository<Skills, Long> {
 
 
     Optional<Skills> findByUser(Users user);
+
+    void deleteByUser(Users user);
 }

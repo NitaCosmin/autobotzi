@@ -47,10 +47,10 @@ public class ProjectsController {
         return projectsService.getAllProjectsFromOrganization(email);
     }
 
-    @GetMapping("/department")
-    public List<ProjectDepartmentDto> getAllProjectsFromDepartment(@RequestParam String departmentName) {
-        return projectsService.getAllProjectsByDepartmentName(departmentName);
-    }
+//    @GetMapping("/department")
+//    public List<ProjectDepartmentDto> getAllProjectsFromDepartment(@RequestParam String departmentName) {
+//        return projectsService.getAllProjectsByDepartmentName(departmentName);
+//    }
     @PutMapping
     public Projects updateProjectStatus(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String name
             , @RequestBody ProjectUpdate projectUpdate) {

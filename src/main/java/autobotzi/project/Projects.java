@@ -55,7 +55,7 @@ public class Projects {
     @JoinColumn(name = "user_id")
     private Users user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "department_id")
     private Departments department;
 

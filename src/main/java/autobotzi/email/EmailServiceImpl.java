@@ -18,7 +18,7 @@ public class EmailServiceImpl implements EmailService{
 
             SimpleMailMessage mailMessage
                     = new SimpleMailMessage();
-            String signUpLink = "http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net \n\n ";
+            String signUpLink = "http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/signup\n\n ";
 
             mailMessage.setFrom(sender);
             mailMessage.setTo(email.getRecipient());
