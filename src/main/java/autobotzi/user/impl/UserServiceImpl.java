@@ -63,15 +63,18 @@ public class UserServiceImpl implements UserService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    public List<UsersPreViewDto> getAllPreView() {
+    public List<UsersPreViewDto> getAllPreView(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         return userRepository.findAll().stream()
-                .map(user -> UsersPreViewDto.builder()
-                        .name(user.getName())
-                        .email(user.getEmail())
+                .filter(u -> u.getOrganization().equals(user.getOrganization()))
+                .map(u -> UsersPreViewDto.builder()
+                        .name(u.getName())
+                        .email(u.getEmail())
                         .build())
                 .collect(java.util.stream.Collectors.toList());
     }
-
     public List<UsersAdminViewDto> getAllAdminView() {
         return userRepository.findAll().stream()
                 .map(user -> UsersAdminViewDto.builder()

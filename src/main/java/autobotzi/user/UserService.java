@@ -15,7 +15,7 @@ public interface UserService {
 
     List<UsersOrganizationsDto> getAllUsersWithOrganizations();
 
-    List<UsersPreViewDto> getAllPreView();
+    List<UsersPreViewDto> getAllPreView(String email);
     List<UsersDto> getUsersByRole(Role role);
     List<Role> getAllRoles();
     UsersDto updateUserRole(String email, Role role);

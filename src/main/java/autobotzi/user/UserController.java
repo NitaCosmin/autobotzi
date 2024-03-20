@@ -58,8 +58,8 @@ public class UserController {
     }
 
     @GetMapping("/all-preview")
-    public List<UsersPreViewDto> getAllPreview() {
-        return userService.getAllPreView();
+    public List<UsersPreViewDto> getAllPreview(@AuthenticationPrincipal UserDetails userDetails) {
+        return userService.getAllPreView(userDetails.getUsername());
     }
 
     @GetMapping("/role")
