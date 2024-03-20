@@ -96,6 +96,10 @@ public class UserController {
     public Users deleteUserByEmail(@RequestParam String email) {
         return userService.deleteUserByEmail(email);
     }
+    @DeleteMapping("/delete-everywhere")
+    public void deleteUserFromEverywhere(@RequestParam String email) {
+         userService.deleteUserFromEverywhere(email);
+    }
 
     //===========================================================
     //User Skills

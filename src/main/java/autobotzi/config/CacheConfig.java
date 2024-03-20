@@ -26,7 +26,7 @@ public class CacheConfig {
             @Override
             protected Cache createConcurrentMapCache(@NotNull final String name) {
                 return new ConcurrentMapCache(name,
-                        CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS).build().asMap(), false);
+                        CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build().asMap(), false);
             }
         };
     }

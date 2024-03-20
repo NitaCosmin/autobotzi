@@ -18,4 +18,6 @@ public interface DepartmentsMembersRepository extends JpaRepository<DepartmentsM
     Optional<DepartmentsMembers> findByUser(Users user);
 
     void deleteByUser(Users user);
+
+    Optional<DepartmentsMembers> findByUserEmail(String email);
 }

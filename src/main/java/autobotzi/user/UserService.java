@@ -23,4 +23,5 @@ public interface UserService {
     UsersDto updateUserByEmail(String email, String name);
     List<UsersDto> getUsersByDepartment(String departmentName);
     Users deleteUserByEmail(String email);
+    void deleteUserFromEverywhere(String email);
 }

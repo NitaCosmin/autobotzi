@@ -66,9 +66,12 @@ public class DepartmentsMembersServiceImpl implements DepartmentsMembersService 
     }
 
     public void deleteDepartmentMember(String email) {
-           departmentsMembersRepository.delete(userRepository.findByEmail(email)
-                   .map(user -> departmentsMembersRepository.findByUser(user)
-                           .orElseThrow(() -> new IllegalArgumentException("Department member not found")))
-                   .orElseThrow(() -> new IllegalArgumentException("User not found")));
+        DepartmentsMembers departmentsMembers = departmentsMembersRepository.findByUserEmail(email)
+                .orElse(null);
+        if (departmentsMembers == null) {
+            return;
         }
+        departmentsMembers.setUser(null);
+        departmentsMembersRepository.save(departmentsMembers);
+    }
 }
