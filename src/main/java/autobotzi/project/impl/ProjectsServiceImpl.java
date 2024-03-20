@@ -1,8 +1,11 @@
 package autobotzi.project.impl;
 
+import autobotzi.departments.Departments;
+import autobotzi.departments.DepartmentsRepository;
 import autobotzi.project.Projects;
 import autobotzi.project.ProjectsRepository;
 import autobotzi.project.ProjectsService;
+import autobotzi.project.dto.ProjectDepartmentDto;
 import autobotzi.project.dto.ProjectUpdate;
 import autobotzi.project.dto.ProjectsDateDto;
 import autobotzi.project.dto.ProjectsDto;
@@ -14,14 +17,12 @@ import autobotzi.user.Users;
 import autobotzi.user.utils.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 
@@ -33,10 +34,11 @@ public class ProjectsServiceImpl implements ProjectsService {
     private final ProjectsRepository projectsRepository;
     private final UserRepository userRepository;
     private final RolesRepository roleRepository;
+    private final DepartmentsRepository departmentsRepository;
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    @CacheEvict(value = "projects",allEntries = true)
+    @CacheEvict(value = "projects", allEntries = true)
     public Projects createProject(String email, ProjectsDto projectsDto) {
         return projectsRepository.findByName(projectsDto.getName())
                 .filter(p -> {
@@ -53,6 +55,11 @@ public class ProjectsServiceImpl implements ProjectsService {
                         .organization(userRepository.findByEmail(email)
                                 .map(Users::getOrganization)
                                 .orElseThrow(() -> new RuntimeException("User not found")))
+                        .department(departmentsRepository.findByUser(
+                                        userRepository.findByEmail(email)
+                                                .filter(user -> user.getRole().equals(Role.DEPARTMENT_MANAGER))
+                                                .orElse(null))
+                                .orElseThrow(() -> new RuntimeException("Department not found")))
                         .build()));
     }
 
@@ -78,7 +85,7 @@ public class ProjectsServiceImpl implements ProjectsService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    @CacheEvict(value = "projects",allEntries = true)
+    @CacheEvict(value = "projects", allEntries = true)
     public Projects addProjectManagerToProjectByEmail(String admin, String email, String name) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
@@ -94,6 +101,8 @@ public class ProjectsServiceImpl implements ProjectsService {
                         .map(user -> {
                             Projects project = projectsRepository.findByName(name).orElseThrow();
                             project.setUser(user);
+                            project.setDepartment(departmentsRepository.findByUser(user)
+                                    .orElseThrow(() -> new RuntimeException("Department not found")));
                             return project;
                         })
                         .orElseThrow(() -> new RuntimeException("Project Manager not found or only the authenticated admin can modify the project"))
@@ -174,14 +183,14 @@ public class ProjectsServiceImpl implements ProjectsService {
 
         return projectsRepository.findAllByPeriod(period).stream()
                 .map(project -> ProjectsDto.builder()
-                .name(project.getName())
-                .description(project.getDescription())
-                .period(project.getPeriod())
-                .projectStatus(project.getProjectStatus())
-                .startDate(project.getStartDate())
-                .deadLine(project.getDeadline())
-                .technology(project.getTechnology())
-                .build()).toList();
+                        .name(project.getName())
+                        .description(project.getDescription())
+                        .period(project.getPeriod())
+                        .projectStatus(project.getProjectStatus())
+                        .startDate(project.getStartDate())
+                        .deadLine(project.getDeadline())
+                        .technology(project.getTechnology())
+                        .build()).toList();
     }
 
     public List<Status> getAllStatus() {
@@ -191,6 +200,7 @@ public class ProjectsServiceImpl implements ProjectsService {
     public List<Period> getAllPeriods() {
         return List.of(Period.values());
     }
+
     @Transactional
     @Cacheable(value = "projects", key = "#email")
     public List<ProjectsDto> getAllProjectsFromOrganization(String email) {
@@ -209,8 +219,21 @@ public class ProjectsServiceImpl implements ProjectsService {
                         .build())
                 .toList();
     }
+
     @Transactional
-    @CacheEvict(value = "projects",allEntries = true)
+    @Cacheable(value = "projects", key = "#departmentName")
+    public List<ProjectDepartmentDto> getAllProjectsByDepartmentName( String departmentName) {
+        return projectsRepository.findAll().stream()
+                .filter(projects -> projects.getDepartment().getName().equals(departmentName))
+                .map(project -> ProjectDepartmentDto.builder()
+                        .name(project.getName())
+                        .department(project.getDepartment().getName())
+                        .build())
+                .toList();
+    }
+
+    @Transactional
+    @CacheEvict(value = "projects", allEntries = true)
     public Projects deleteProject(String name) {
         return projectsRepository.findByName(name)
                 .filter(projects -> {

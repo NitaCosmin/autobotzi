@@ -1,5 +1,6 @@
 package autobotzi.project;
 
+import autobotzi.departments.Departments;
 import autobotzi.organizations.Organizations;
 import autobotzi.project.utils.Period;
 import autobotzi.project.utils.Status;
@@ -53,5 +54,9 @@ public class Projects {
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_id")
+    private Departments department;
 
 }

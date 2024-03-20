@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.Cacheable;
 
 import java.util.List;
 
@@ -26,9 +25,9 @@ import java.util.List;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000"
-        ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
-        ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
-        ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
+        , "http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
+        , "https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
+        , "https://front-autobotzi-c55123365842.herokuapp.com/"})
 
 public class UserController {
 
@@ -77,6 +76,7 @@ public class UserController {
     public List<UsersDto> getByDepartment(@RequestParam String departmentName) {
         return userService.getUsersByDepartment(departmentName);
     }
+
     @GetMapping("/roles")
     public List<Role> getAllRoles() {
         return userService.getAllRoles();
@@ -91,6 +91,7 @@ public class UserController {
     public UsersDto updateUserByEmail(@RequestParam String email, @RequestParam String name) {
         return userService.updateUserByEmail(email, name);
     }
+
     @DeleteMapping("/delete-by-email")
     public Users deleteUserByEmail(@RequestParam String email) {
         return userService.deleteUserByEmail(email);
@@ -104,11 +105,13 @@ public class UserController {
     public List<UserSkillsDto> getAllUserSkills() {
         return userSkillsService.getAllUserSkills();
     }
+
     @GetMapping("/skills/user")
     public List<UserSkillsDto> getSkillsByUserEmail(@AuthenticationPrincipal UserDetails userDetails) {
         return userSkillsService.getSkillsByUserEmail(userDetails.getUsername());
     }
-    @PutMapping("/skills")
+
+    @PostMapping("/skills")
     public UserSkills addSkillToUser(@RequestBody UserSkillsAssign userSkillsAssign) {
         return userSkillsService.addSkillToUser(userSkillsAssign);
     }
@@ -139,7 +142,6 @@ public class UserController {
     //===========================================================
     //User Roles
     //===========================================================
-
 
 
     @PostMapping("/roles/assign")

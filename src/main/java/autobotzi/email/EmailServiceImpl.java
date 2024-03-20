@@ -18,7 +18,7 @@ public class EmailServiceImpl implements EmailService{
 
             SimpleMailMessage mailMessage
                     = new SimpleMailMessage();
-            String signUpLink = "http://localhost:8080/swagger-ui/index.html#/authentication-controller/signUp/ \n\n ";
+            String signUpLink = "http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net \n\n ";
 
             mailMessage.setFrom(sender);
             mailMessage.setTo(email.getRecipient());
@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailService{
 
             SimpleMailMessage mailMessage
                     = new SimpleMailMessage();
-            String signUpLink = "https://autobotzi-ccec90c77ecb.herokuapp.com/swagger-ui/index.html#/authentication-controller/signUpAdmin \n\n ";
+            String signUpLink = "http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/signUpAdmin \n\n ";
 
             mailMessage.setFrom(sender);
             mailMessage.setTo(email.getRecipient());

@@ -1,5 +1,6 @@
 package autobotzi.project.assignments.impl;
 
+import autobotzi.project.Projects;
 import autobotzi.project.ProjectsRepository;
 import autobotzi.project.assignments.ProjectAssignments;
 import autobotzi.project.assignments.ProjectAssignmentsRepository;
@@ -7,8 +8,10 @@ import autobotzi.project.assignments.ProjectAssignmentsService;
 import autobotzi.project.assignments.dto.ProjectAssignmentsDto;
 import autobotzi.project.assignments.dto.ProjectAssignmentsResponse;
 import autobotzi.project.assignments.utils.StatusAssignments;
+import autobotzi.project.dto.ProjectsDto;
 import autobotzi.role.RolesRepository;
 import autobotzi.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +82,24 @@ public class ProjectAssignmentsServiceImpl implements ProjectAssignmentsService 
                                 .orElseThrow(() -> new IllegalArgumentException("Project assignment not found")))
                         .orElseThrow(() -> new IllegalArgumentException("User not found")
                         ));
+    }
+
+    @Transactional
+    public List<ProjectsDto> getProjectsByEmployee(String email) {
+        return projectAssignmentsRepository.findAll().stream()
+                .filter(projectAssignments -> projectAssignments.getUser().getEmail().equals(email))
+                .filter(projectAssignments -> projectAssignments.getStatusAssignments().equals(StatusAssignments.Allocated))
+                .map(ProjectAssignments::getProject)
+                .map(projects -> ProjectsDto.builder()
+                        .name(projects.getName())
+                        .projectStatus(projects.getProjectStatus())
+                        .deadLine(projects.getDeadline())
+                        .startDate(projects.getStartDate())
+                        .description(projects.getDescription())
+                        .period(projects.getPeriod())
+                        .technology(projects.getTechnology())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 

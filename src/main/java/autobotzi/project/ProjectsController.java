@@ -4,6 +4,7 @@ import autobotzi.project.assignments.ProjectAssignments;
 import autobotzi.project.assignments.ProjectAssignmentsService;
 import autobotzi.project.assignments.dto.ProjectAssignmentsDto;
 import autobotzi.project.assignments.dto.ProjectAssignmentsResponse;
+import autobotzi.project.dto.ProjectDepartmentDto;
 import autobotzi.project.dto.ProjectUpdate;
 import autobotzi.project.dto.ProjectsDateDto;
 import autobotzi.project.dto.ProjectsDto;
@@ -44,6 +45,11 @@ public class ProjectsController {
     public List<ProjectsDto> getAllProjectsFromOrganization(@AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         return projectsService.getAllProjectsFromOrganization(email);
+    }
+
+    @GetMapping("/department")
+    public List<ProjectDepartmentDto> getAllProjectsFromDepartment(@RequestParam String departmentName) {
+        return projectsService.getAllProjectsByDepartmentName(departmentName);
     }
     @PutMapping
     public Projects updateProjectStatus(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String name
@@ -143,7 +149,10 @@ public class ProjectsController {
     public void getEmployeesByProject(@RequestBody ProjectAssignmentsResponse projectAssignmentsResponse) {
         projectAssignmentsService.getEmployeesByProject(projectAssignmentsResponse);
     }
-
+    @GetMapping("/assignments/employee")
+    public List<ProjectsDto> getProjectsByEmployee(@AuthenticationPrincipal UserDetails userDetails) {
+        return projectAssignmentsService.getProjectsByEmployee(userDetails.getUsername());
+    }
     @GetMapping("/assignments/status")
     public void GetAllStatusAssignments() {
         projectAssignmentsService.GetAllStatusAssignments();
