@@ -27,11 +27,11 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Transactional
     public List<NotificationsView> getAllNotificationsOfUser(String user) {
         return notificationsRepository.findAll().stream()
-                .filter(notifications -> notifications.getUser().getEmail().equals(user))
+                .filter(notifications -> notifications.getUserReciver().getEmail().equals(user))
                 .map(notifications -> NotificationsView.builder()
                         .message(notifications.getMessage())
                         .created_at(notifications.getCreated_at())
-                        .user(notifications.getUserReciver().getEmail())
+                        .user(notifications.getUser().getEmail())
                         .build())
                 .collect(Collectors.toList());
 

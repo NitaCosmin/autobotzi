@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class DepartmentsServiceImpl implements DepartmentsService {
@@ -51,21 +53,26 @@ public class DepartmentsServiceImpl implements DepartmentsService {
     }
 
     public Departments addDepartment(DepartmentsDto departmentsDto, String email) {
-        return departmentsRepository.save(Departments.builder()
-                .name(departmentsDto.getName())
-                .description(departmentsDto.getDescription())
-                .user(userRepository.findByEmail(email)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
-                .organization(userRepository.findByEmail(email)
-                                .map(user -> {
-                                    if (user.getRole().equals(Role.ADMIN)) {
-                                        return user.getOrganization();
-                                    } else {
-                                        throw new IllegalArgumentException("User is not an admin");
-                                    }
-                                })
-                                .orElseThrow(() -> new IllegalArgumentException("User not found")))
-                .build());
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Departments existingDepartment = departmentsRepository.findByUser(user).orElse(null);
+
+        if (existingDepartment != null) {
+            existingDepartment.setName(departmentsDto.getName());
+            existingDepartment.setDescription(departmentsDto.getDescription());
+            return departmentsRepository.save(existingDepartment);
+        } else {
+            if (!user.getRole().equals(Role.ADMIN)) {
+                throw new IllegalArgumentException("User is not an admin");
+            }
+            return departmentsRepository.save(Departments.builder()
+                    .name(departmentsDto.getName())
+                    .description(departmentsDto.getDescription())
+                    .user(user)
+                    .organization(user.getOrganization())
+                    .build());
+        }
     }
 
     public Departments updateDepartmentManager(String email, String departmentName) {
