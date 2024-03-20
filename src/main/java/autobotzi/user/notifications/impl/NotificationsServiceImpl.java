@@ -51,7 +51,7 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Transactional
     public Optional<NotificationsView> markAsRead(String user) {
         return notificationsRepository.findAll().stream()
-                .filter(notifications -> notifications.getUser().getEmail().equals(user) && notifications.getUnread())
+                .filter(notifications -> notifications.getUserReciver().getEmail().equals(user) && notifications.getUnread())
                 .sorted(Comparator.comparing(Notifications::getCreated_at).reversed())
                 .findFirst()
                 .map(notifications -> {
@@ -60,7 +60,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                     return NotificationsView.builder()
                             .message(notifications.getMessage())
                             .created_at(notifications.getCreated_at())
-                            .user(notifications.getUserReciver().getEmail())
+                            .user(notifications.getUser().getEmail())
                             .build();
                 });
     }
