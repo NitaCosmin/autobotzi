@@ -27,7 +27,7 @@ public class Departments {
     @JoinColumn(name = "user_id")
     private Users user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organizations organization;
 
