@@ -31,7 +31,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                 .map(notifications -> NotificationsView.builder()
                         .message(notifications.getMessage())
                         .created_at(notifications.getCreated_at())
-                        .user(notifications.getUser().getEmail())
+                        .user(notifications.getUserReciver().getEmail())
                         .build())
                 .collect(Collectors.toList());
 
@@ -60,7 +60,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                     return NotificationsView.builder()
                             .message(notifications.getMessage())
                             .created_at(notifications.getCreated_at())
-                            .user(notifications.getUser().getEmail())
+                            .user(notifications.getUserReciver().getEmail())
                             .build();
                 });
     }
